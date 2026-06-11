@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, Chef! 🎂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+
+    :root {
+      --odia-red: #c0392b;
+      --kannada-gold: #e2a020;
+      --spice-orange: #e67e22;
+      --turmeric: #f1c40f;
+      --leaf-green: #27ae60;
+      --cream: #fdf6ec;
+      --deep-brown: #3e1f00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0a00 0%, #3e1f00 40%, #6b2d00 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* floating spice emojis */
+    .spice-bg span {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.12;
+      animation: drift linear infinite;
+    }
+
+    @keyframes drift {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.14; }
+      90%  { opacity: 0.14; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    .hero-tagline {
+      font-size: 0.95rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--kannada-gold);
+      margin-bottom: 1rem;
+    }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: #fff;
+      line-height: 1.1;
+      text-shadow: 0 4px 30px rgba(226,160,32,0.5);
+    }
+
+    .hero-name span { color: var(--kannada-gold); }
+
+    .hero-subtitle {
+      margin-top: 1rem;
+      font-size: 1.15rem;
+      color: #f0d9b5;
+      max-width: 480px;
+    }
+
+    /* multilingual greeting badges */
+    .greetings {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .greet-badge {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(226,160,32,0.4);
+      border-radius: 30px;
+      padding: 0.4rem 1.1rem;
+      color: var(--kannada-gold);
+      font-size: 1rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(8px); }
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section {
+      padding: 5rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--spice-orange);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--deep-brown);
+      margin-bottom: 1.5rem;
+    }
+
+                /* ── KITCHEN SECTION ── */
+    #kadai-section {
+      background: #1a0800;
+      padding: 3rem 1.5rem 4rem;
+    }
+    #kadai-section .section-label { color: #e2a020; }
+    #kadai-section .section-title { color: #fff; margin-bottom: 0.4rem; }
+    #kadai-section .section-intro { color: #d4a96a; font-size: 0.92rem; margin-bottom: 1.8rem; }
+
+    /* Three-column layout */
+    .kitchen-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr 260px;
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    /* LEFT: ingredient token grid */
+    .token-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      align-content: start;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: #e2a020 rgba(255,255,255,0.1);
+    }
+    .token-grid::-webkit-scrollbar { width: 4px; }
+    .token-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    .token-grid::-webkit-scrollbar-thumb { background: #e2a020; border-radius: 4px; }
+
+    .ing-token {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: opacity 0.3s, transform 0.15s;
+    }
+    .ing-token:hover { transform: scale(1.08); }
+    .ing-token:active { cursor: grabbing; }
+    .ing-token.dragging-active { opacity: 0.35; pointer-events: none; }
+    .ing-token.dropped { opacity: 0; pointer-events: none; }
+
+    .tok-bubble {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: rgba(255,250,225,0.97);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.55), 0 0 0 2.5px #e2a020;
+      overflow: hidden;
+    }
+    .tok-bubble img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .tok-label {
+      margin-top: 3px; font-size: 0.49rem; font-weight: 700;
+      color: #fff; text-align: center;
+      text-shadow: 0 1px 4px #000;
+      max-width: 60px; line-height: 1.2;
+      background: rgba(0,0,0,0.62); border-radius: 4px;
+      padding: 1px 4px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* floating ghost during drag */
+    #drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      transform: translate(-50%, -80%) scale(1.4) rotate(6deg);
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.7));
+    }
+    #drag-ghost .tok-bubble {
+      width: 56px; height: 56px; font-size: 1.7rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.7), 0 0 0 2.5px #e2a020;
+    }
+
+    /* CENTRE: video scene */
+    .kitchen-scene {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+      background: radial-gradient(ellipse at center, #1a0e00 0%, #0a0500 100%);
+      aspect-ratio: 16/9;
+    }
+
+    /* green-screen video — screen blend removes dark bg, keeps bright pot */
+    .kitchen-scene video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: screen;
+      opacity: 1;
+    }
+
+    /* emoji overlay canvas — sits on top of video */
+    #emoji-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* invisible drop zone over the pot */
+    #kadai-dropzone {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 10;
+      cursor: crosshair;
+      transition: box-shadow 0.15s;
+    }
+    #kadai-dropzone.drag-over {
+      box-shadow: 0 0 0 4px #e2a020, 0 0 35px rgba(226,160,32,0.85);
+    }
+
+    /* status bar */
+    .scene-status {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.88));
+      padding: 2rem 1rem 0.65rem;
+      display: flex; align-items: center; gap: 0.7rem;
+      z-index: 20;
+    }
+    .scene-status p {
+      color: #e2a020; font-size: 0.8rem; flex: 1;
+      font-family: 'Poppins', sans-serif;
+    }
+    .scene-progress-wrap {
+      width: 90px; height: 5px;
+      background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;
+    }
+    .scene-progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #e67e22, #e2a020);
+      border-radius: 10px; transition: width 0.4s ease;
+    }
+    #scene-reset {
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      color: #f0d9b5; padding: 0.25rem 0.75rem; border-radius: 20px;
+      cursor: pointer; font-size: 0.7rem; font-family: 'Poppins', sans-serif;
+      display: none;
+    }
+    #scene-reset:hover { background: rgba(255,255,255,0.22); }
+
+    /* RIGHT: recipe card */
+    .recipe-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(226,160,32,0.3);
+      border-radius: 20px; padding: 1.4rem;
+      color: #f0d9b5;
+    }
+    .recipe-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; color: #e2a020; margin-bottom: 0.2rem;
+    }
+    .recipe-card .recipe-subtitle {
+      font-size: 0.65rem; color: #a08060; margin-bottom: 0.9rem;
+      text-transform: uppercase; letter-spacing: 2px;
+    }
+    .recipe-list { list-style: none; }
+    .recipe-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.38rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.75rem; opacity: 0.25; transition: opacity 0.4s;
+    }
+    .recipe-list li.unlocked { opacity: 1; }
+    .recipe-list li .r-name { color: #f0d9b5; }
+    .recipe-list li .r-qty  { color: #e2a020; font-weight: 600; font-size: 0.7rem; }
+    .recipe-list li .r-tick { color: #27ae60; margin-left: 0.3rem; display: none; }
+    .recipe-list li.unlocked .r-tick { display: inline; }
+    .recipe-reveal {
+      margin-top: 1rem;
+      background: linear-gradient(135deg, #e67e22, #e2a020);
+      border-radius: 12px; padding: 0.9rem; text-align: center; display: none;
+      animation: popIn 0.5s ease;
+    }
+    .recipe-reveal.show { display: block; }
+    .recipe-reveal .sweet-emoji { font-size: 2.2rem; display: block; margin-bottom: 0.3rem; }
+    .recipe-reveal h4 { font-family: 'Playfair Display', serif; color: #3e1f00; font-size: 0.95rem; }
+    .recipe-reveal p { font-size: 0.73rem; color: rgba(62,31,0,0.85); margin-top: 0.3rem; }
+
+    /* full-width pizza complete banner — shown below the pizza */
+    #pizza-complete-banner {
+      display: none;
+      max-width: 1200px;
+      margin: 1.5rem auto 0;
+      background: linear-gradient(135deg, #e2a020, #e67e22);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      animation: popIn 0.6s ease;
+      box-shadow: 0 8px 40px rgba(226,160,32,0.4);
+    }
+    #pizza-complete-banner.show { display: block; }
+    #pizza-complete-banner .banner-hat { font-size: 3.5rem; display: block; margin-bottom: 0.8rem; }
+    #pizza-complete-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: #3e1f00;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+    #pizza-complete-banner p {
+      font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+      color: rgba(62,31,0,0.85);
+      max-width: 540px;
+      margin: 0 auto 0.8rem;
+      line-height: 1.6;
+    }
+    #pizza-complete-banner .banner-emojis { font-size: 2rem; }
+
+    @media (max-width: 900px) {
+      .kitchen-layout {
+        grid-template-columns: 1fr;
+      }
+      /* on mobile: video scene first, tokens second, recipe card third */
+      .kitchen-layout .token-grid  { order: 2; grid-template-columns: repeat(4, 1fr); max-height: none; overflow-y: visible; }
+      .kitchen-layout .kitchen-scene { order: 1; }
+      .kitchen-layout .recipe-card { order: 3; }
+    }
+    @media (max-width: 500px) {
+      .token-grid { grid-template-columns: repeat(3, 1fr) !important; }
+      .tok-bubble { width: 44px; height: 44px; font-size: 1.3rem; }
+      .tok-label  { font-size: 0.46rem; max-width: 54px; }
+    }
+
+/* ── WISHES WALL ── */
+    #wishes-section {
+      text-align: center;
+      padding: 5rem 1.5rem;
+    }
+
+    .wish-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .wish-input-row {
+      display: flex;
+      gap: 0.7rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #wish-name, #wish-text {
+      padding: 0.75rem 1rem;
+      border: 2px solid #e0c090;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #wish-name { width: 160px; }
+    #wish-text { flex: 1; min-width: 200px; }
+    #wish-name:focus, #wish-text:focus { border-color: var(--spice-orange); }
+
+    #wish-submit {
+      background: var(--spice-orange);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.2s;
+    }
+    #wish-submit:hover { background: #d35400; transform: scale(1.04); }
+
+    .wishes-wall {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .wish-note {
+      background: #fff;
+      border-left: 4px solid var(--kannada-gold);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      max-width: 280px;
+      text-align: left;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .wish-note {
+      position: relative;
+    }
+    .wish-note strong { display: block; color: var(--odia-red); font-size: 0.85rem; margin-bottom: 0.3rem; }
+    .wish-note span   { font-size: 0.9rem; color: #444; }
+    .wish-delete {
+      position: absolute;
+      top: 0.5rem; right: 0.5rem;
+      background: none; border: none;
+      color: #ccc; font-size: 1rem;
+      cursor: pointer; line-height: 1;
+      padding: 0 2px;
+      transition: color 0.2s;
+    }
+    .wish-delete:hover { color: var(--odia-red); }
+
+    /* ── CAKE COUNTER ── */
+    #countdown {
+      background: linear-gradient(135deg, var(--turmeric), var(--kannada-gold), var(--spice-orange));
+      text-align: center;
+      padding: 4rem 1.5rem;
+    }
+
+    .cake-display {
+      font-size: clamp(4rem, 15vw, 9rem);
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.2));
+      animation: cakeBounce 3s ease infinite;
+    }
+
+    @keyframes cakeBounce {
+      0%, 100% { transform: translateY(0) rotate(-3deg);  }
+      50%       { transform: translateY(-15px) rotate(3deg); }
+    }
+
+    #countdown h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: var(--deep-brown);
+      margin-top: 1rem;
+    }
+
+    #countdown p {
+      font-size: 1rem;
+      color: rgba(62,31,0,0.75);
+      margin-top: 0.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep-brown);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      font-size: 0.85rem;
+    }
+    footer .big { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+
+    /* ── CONFETTI CANVAS ── */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── FLOATING PARTY BTN ── */
+    #party-btn {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--spice-orange);
+      color: #fff;
+      border: none;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      font-size: 1.7rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(230,126,34,0.5);
+      z-index: 100;
+      transition: transform 0.2s;
+    }
+    #party-btn:hover { transform: scale(1.15) rotate(15deg); }
+
+    #music-btn {
+      position: fixed;
+      bottom: 2rem; right: 6rem;
+      background: var(--deep-brown);
+      color: #fff;
+      border: 2px solid var(--kannada-gold);
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      z-index: 100;
+      transition: transform 0.2s;
+    }
+    #music-btn:hover { transform: scale(1.1); }
+
+    /* music toast */
+    #music-toast {
+      position: fixed;
+      bottom: 6.5rem; right: 1rem;
+      background: rgba(62,31,0,0.95);
+      border: 1px solid var(--kannada-gold);
+      color: #f0d9b5;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-family: 'Poppins', sans-serif;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #music-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }    /* responsive tweaks */
+    @media (max-width: 600px) {
+      .culture-grid { grid-template-columns: 1fr; }
+      .culture-heart { display: none; }
+      .quiz-options  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- background audio -->
+<audio id="bg-audio" loop preload="auto">
+  <source src="Song.mp3" type="audio/mpeg">
+</audio>
+<button id="party-btn" title="Celebrate!" onclick="launchConfetti()">🎉</button>
+<button id="music-btn" title="Toggle music" onclick="toggleMusic()">🔇</button>
+<div id="music-toast">🎵 Music is playing — tap to mute</div>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div id="hero">
+  <div class="spice-bg" id="spice-bg"></div>
+
+  <p class="hero-tagline">A special birthday celebration for</p>
+  <h1 class="hero-name">The <span>Master Chef</span><br>Has a Birthday!</h1>
+  <p class="hero-subtitle">
+    From the shores of Odisha, seasoning life in the Silicon Valley of India — here's to you!
+  </p>
+
+  <div class="greetings">
+    <span class="greet-badge">ଜନ୍ମଦିନ ଶୁଭେଚ୍ଛା! 🌺</span>
+    <span class="greet-badge">ಹುಟ್ಟುಹಬ್ಬದ ಶುಭಾಶಯಗಳು! 🪷</span>
+    <span class="greet-badge">Happy Birthday! 🎂</span>
+  </div>
+
+  <p class="scroll-hint">↓ scroll to explore ↓</p>
+</div>
+
+
+<!-- ══════════════ KITCHEN ══════════════ -->
+<div id="kadai-section">
+  <div style="max-width:1200px;margin:0 auto 1.6rem;">
+    <p class="section-label">The Secret Recipe</p>
+    <h2 class="section-title">Build Bishal’s Pizza! 🍕</h2>
+    <p class="section-intro">Drag Bishal’s toppings onto the pizza — each one makes it more uniquely him!</p>
+  </div>
+
+  <div class="kitchen-layout">
+    <!-- LEFT: ingredient tokens -->
+    <div class="token-grid" id="token-grid"></div>
+
+    <!-- CENTRE: video + emoji canvas overlay -->
+    <div class="kitchen-scene" id="kitchen-scene">
+      <video id="cooking-video" autoplay loop muted playsinline>
+        <source src="Where_s_the_video_.mp4" type="video/mp4">
+      </video>
+      <canvas id="emoji-layer"></canvas>
+      <div id="kadai-dropzone"></div>
+      <div class="scene-status">
+        <p id="scene-status">Drag a topping onto the pizza 🍕</p>
+        <div class="scene-progress-wrap">
+          <div class="scene-progress-fill" id="scene-fill"></div>
+        </div>
+        <button id="scene-reset" onclick="resetKitchen()">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: recipe card -->
+    <div class="recipe-card">
+      <h3>Bishal’s Birthday Pizza</h3>
+      <p class="recipe-subtitle">The One & Only · Toppings List</p>
+      <ul class="recipe-list" id="recipe-list"></ul>
+    </div>
+  </div>
+
+  <!-- full-width completion banner -->
+  <div id="pizza-complete-banner">
+    <span class="banner-hat">🎩</span>
+    <h2>Bishal’s Birthday Pizza is complete!</h2>
+    <p>A pizza as unique, generous, and full of flavour as the man himself. Happy Birthday, Bishal!</p>
+    <div class="banner-emojis">🎉 🍕</div>
+  </div>
+  <div id="recipe-reveal" style="display:none"></div>
+
+  <!-- drag ghost -->
+  <div id="drag-ghost"><div class="tok-bubble"></div></div>
+</div>
+
+<!-- ══════════════ WISHES WALL ══════════════ -->
+<section id="wishes-section">
+  <p class="section-label">Leave Your Love</p>
+  <h2 class="section-title">Birthday Wishes Wall 🌸</h2>
+  <div class="wish-container">
+    <div class="wish-input-row">
+      <input id="wish-name" type="text" placeholder="Your name" maxlength="30" />
+      <input id="wish-text" type="text" placeholder="Write a birthday wish..." maxlength="120" />
+      <button id="wish-submit" onclick="addWish()">Send 💌</button>
+    </div>
+    <div class="wishes-wall" id="wishes-wall"></div>
+  </div>
+</section>
+
+
+<!-- ══════════════ CAKE COUNTER ══════════════ -->
+<div id="countdown">
+  <div class="cake-display">🎂</div>
+  <h2 id="cake-msg">Wishing you a year full of flavour!</h2>
+  <p id="cake-sub">May every dish you cook be a masterpiece and every day a celebration.</p>
+</div>
+
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <span class="big">👨‍🍳</span>
+  Made with love, a pinch of turmeric, and a dash of mustard seeds.<br>
+  <span style="color:var(--kannada-gold);">Happy Birthday, Chef!</span> &nbsp;·&nbsp; Odia ❤️ Kannada ❤️ Bengaluru
+</footer>
+
+
+<script>
+// ── BACKGROUND AUDIO ─────────────────────────────────────────────
+var audio = document.getElementById('bg-audio');
+var musicStarted = false;
+
+function startMusic() {
+  if (musicStarted) return;
+  musicStarted = true;
+  audio.volume = 0.35;
+  audio.play().then(function() {
+    document.getElementById('music-btn').textContent = '🎵';
+    var toast = document.getElementById('music-toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4000);
+  }).catch(function() {
+    musicStarted = false; // reset so next interaction retries
+  });
+}
+
+function toggleMusic() {
+  if (!musicStarted) { startMusic(); return; }
+  if (audio.paused) {
+    audio.play();
+    document.getElementById('music-btn').textContent = '🎵';
+  } else {
+    audio.pause();
+    document.getElementById('music-btn').textContent = '🔇';
+  }
+}
+
+// Fire on the very first pointer interaction — most reliable gesture
+document.addEventListener('pointerdown', function() { startMusic(); }, { once: true, passive: true });
+document.addEventListener('touchstart',  function() { startMusic(); }, { once: true, passive: true });
+
+// ── FLOATING SPICES ──────────────────────────────────────────────
+const spices = ['🌶️','🧄','🧅','🫚','🌿','🍛','🍲','🫛','🥥','🍋','🌰','🫙'];
+const bg = document.getElementById('spice-bg');
+for (let i = 0; i < 22; i++) {
+  const s = document.createElement('span');
+  s.textContent = spices[Math.floor(Math.random() * spices.length)];
+  s.style.left   = Math.random() * 100 + 'vw';
+  s.style.animationDuration = (8 + Math.random() * 14) + 's';
+  s.style.animationDelay    = (Math.random() * 10) + 's';
+  bg.appendChild(s);
+}
+
+// ── KITCHEN ─────────────────────────────────────────────────
+var INGS = [
+  { icon: '🍳', name: 'Passion for Cooking', photo: 'Screenshot_2026-06-11-21-11-45-51_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '5 cups',        msg: 'First topping on — the pizza is heating up!' },
+  { icon: '🤝', name: 'Loyalty',             photo: 'Screenshot_2026-06-11-21-12-01-20_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: 'A big scoop',   msg: 'A generous layer — holds it all together.' },
+  { icon: '🧘', name: 'Calmness',            photo: 'Screenshot_2026-06-11-21-14-19-12_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '10 cups',       msg: 'A calming layer settles over the pizza...' },
+  { icon: '😎', name: 'Coolness',            photo: 'Screenshot_2026-06-11-21-15-26-19_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '8 cups',        msg: 'Cool as a cucumber — this topping lands perfectly.' },
+  { icon: '🌶️', name: 'Anger',         photo: 'Screenshot_2026-06-11-21-16-07-90_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '1 tbsp',    msg: 'A pinch of spice — just what this pizza needed!' },
+  { icon: '🏠', name: 'Hosting Skills',      photo: 'Screenshot_2026-06-11-21-21-30-08_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '10 cups',       msg: 'The pizza is getting crowded in the best way!' },
+  { icon: '😄', name: 'Sense of Humour',     photo: 'Screenshot_2026-06-11-21-22-07-06_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '5 tbsp',        msg: 'This topping makes the whole pizza smile.' },
+  { icon: '📌', name: 'Stubbornness',        photo: 'Screenshot_2026-06-11-21-23-04-68_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: 'A tiny pinch',  msg: 'A tiny pinch — but you’ll definitely taste it.' },
+  { icon: '⏳',     name: 'Patience',            photo: 'Screenshot_2026-06-11-21-24-45-94_965bbf4d18d205f782c6b8409c5773a4.jpg', qty: '4 cups',        msg: 'Low and slow — this topping needed patience.' },
+  { icon: '🗺️', name: 'Adventurousness', photo: 'Screenshot_2026-06-11-21-26-07-78_92460851df6f172a4592fca41cc2d2e6.jpg', qty: '4 cups',       msg: 'Nobody expected this topping — and it’s perfect.' },
+  { icon: '❤️', name: 'Love for Family',   photo: 'Screenshot_2026-06-11-21-26-34-23_92460851df6f172a4592fca41cc2d2e6.jpg', qty: 'Unmeasurable',  msg: 'The pizza can barely hold this much love.' },
+  { icon: '🫂', name: 'Friendship',          photo: 'Screenshot_2026-06-11-21-26-53-74_92460851df6f172a4592fca41cc2d2e6.jpg', qty: '6 cups',        msg: 'Like extra cheese — it makes everything better.' },
+  { icon: '🍽️', name: 'Ability to Feed a Crowd', photo: 'Screenshot_2026-06-11-21-27-53-32_92460851df6f172a4592fca41cc2d2e6.jpg', qty: 'Unlimited', msg: 'This pizza just got bigger — feeds everyone!' },
+];
+
+// Pot position as fraction of scene container
+// Green screen video: pot is roughly centre of frame
+var POT = { cx: 0.50, cy: 0.48, r: 0.30 };  // pizza is larger and more centred
+
+var kAdded = 0, kTotal = INGS.length;
+var kParticles = [], kTick = 0;
+var emojiCanvas, ectx, dropzone, scFillEl, scStatus, scReset, recipeReveal, recipeList, dragGhost;
+
+// ── Emoji particle system ─────────────────────────────────────────
+// Each dropped emoji spawns as a particle that floats up and fades
+function spawnEmoji(icon) {
+  var scene = document.getElementById('kitchen-scene');
+  var W = scene.clientWidth, H = scene.clientHeight;
+  var cx = W * POT.cx, cy = H * POT.cy;
+  var r  = W * POT.r;
+  // drop in near pot centre with slight spread
+  kParticles.push({
+    icon:  icon,
+    x:     cx + (Math.random() - 0.5) * r * 1.0,
+    y:     cy + (Math.random() - 0.5) * r * 0.5,
+    vy:    -(0.4 + Math.random() * 0.6),
+    alpha: 1,
+    size:  28 + Math.random() * 16,
+    phase: Math.random() * Math.PI * 2,
+    bob:   0,
+  });
+}
+
+function spawnSplash() {
+  var scene = document.getElementById('kitchen-scene');
+  var W = scene.clientWidth, H = scene.clientHeight;
+  var cx = W * POT.cx, cy = H * POT.cy;
+  var r  = W * POT.r * 0.6;
+  for (var i = 0; i < 8; i++) {
+    var angle = (i / 8) * Math.PI * 2;
+    kParticles.push({
+      icon:  '✨',
+      x:     cx + Math.cos(angle) * r * 0.3,
+      y:     cy + Math.sin(angle) * r * 0.3,
+      vy:    -(1.5 + Math.random() * 2),
+      vx:    Math.cos(angle) * (1 + Math.random() * 2),
+      alpha: 1,
+      size:  12 + Math.random() * 10,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+}
+
+function drawEmojis() {
+  if (!emojiCanvas || !ectx) return;
+  var W = emojiCanvas.width, H = emojiCanvas.height;
+  kTick += 0.04;
+  ectx.clearRect(0, 0, W, H);
+
+  kParticles = kParticles.filter(function(p) { return p.alpha > 0.02; });
+  kParticles.forEach(function(p) {
+    ectx.save();
+    ectx.globalAlpha = Math.min(p.alpha, 0.95);
+    ectx.font = Math.round(p.size) + 'px serif';
+    ectx.textAlign = 'center';
+    ectx.textBaseline = 'middle';
+    // gentle horizontal bob for floating emojis
+    var bx = p.vx ? 0 : Math.sin(kTick * 1.2 + p.phase) * 3;
+    ectx.fillText(p.icon, p.x + bx, p.y);
+    ectx.restore();
+    // update position
+    p.y     += p.vy;
+    p.x     += (p.vx || 0);
+    p.vy    *= 0.97;  // slow down rise
+    // floating emojis stabilise; splash particles fade quickly
+    if (p.vx !== undefined) {
+      p.alpha *= 0.88;
+    } else {
+      p.vy = Math.max(p.vy, -0.15); // settle to gentle float
+      p.alpha *= 0.992;
+    }
+  });
+
+  // draw drop-zone glow ring when active
+  requestAnimationFrame(drawEmojis);
+}
+
+// ── Size emoji canvas to match scene ─────────────────────────────
+function sizeCanvas() {
+  var scene = document.getElementById('kitchen-scene');
+  if (!scene || !emojiCanvas) return;
+  var W = scene.clientWidth, H = scene.clientHeight;
+  emojiCanvas.width  = W;
+  emojiCanvas.height = H;
+  positionDropzone(W, H);
+}
+
+function positionDropzone(W, H) {
+  if (!dropzone) return;
+  var cx = W * POT.cx, cy = H * POT.cy;
+  var r  = W * POT.r;
+  dropzone.style.left   = (cx - r) + 'px';
+  dropzone.style.top    = (cy - r) + 'px';
+  dropzone.style.width  = (r * 2) + 'px';
+  dropzone.style.height = (r * 2) + 'px';
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+function initKitchen() {
+  emojiCanvas  = document.getElementById('emoji-layer');
+  ectx         = emojiCanvas.getContext('2d');
+  dropzone     = document.getElementById('kadai-dropzone');
+  scFillEl     = document.getElementById('scene-fill');
+  scStatus     = document.getElementById('scene-status');
+  scReset      = document.getElementById('scene-reset');
+  recipeReveal = document.getElementById('recipe-reveal');
+  recipeList   = document.getElementById('recipe-list');
+  dragGhost    = document.getElementById('drag-ghost');
+  var tokenGrid = document.getElementById('token-grid');
+
+  if (!emojiCanvas || !tokenGrid || !recipeList) {
+    console.error('Missing kitchen elements');
+    return;
+  }
+
+  sizeCanvas();
+
+  // Build tokens + recipe rows
+  INGS.forEach(function(ing, i) {
+    var li = document.createElement('li');
+    li.id = 'rrow-' + i;
+    li.innerHTML = '<span class="r-name">' + ing.icon + ' ' + ing.name + '</span>'
+      + '<span><span class="r-qty">' + ing.qty + '</span><span class="r-tick">✓</span></span>';
+    recipeList.appendChild(li);
+
+    var tok = document.createElement('div');
+    tok.className = 'ing-token';
+    tok.id = 'tok-' + i;
+    var photoHtml = ing.photo
+      ? '<img src="' + ing.photo + '" alt="' + ing.name + '">'
+      : ing.icon;
+    tok.innerHTML = '<div class="tok-bubble">' + photoHtml + '</div>'
+      + '<div class="tok-label">' + ing.name + '</div>';
+    tokenGrid.appendChild(tok);
+    attachDrag(tok, i, ing.icon);
+  });
+
+  drawEmojis();
+}
+
+document.addEventListener('DOMContentLoaded', initKitchen);
+window.addEventListener('resize', sizeCanvas);
+
+// ── Drag ──────────────────────────────────────────────────────────
+function attachDrag(tok, idx, icon) {
+  function start(e) {
+    if (tok.classList.contains('dropped')) return;
+    e.preventDefault();
+    tok.classList.add('dragging-active');
+    dragGhost.querySelector('.tok-bubble').textContent = icon;
+    dragGhost.style.display = 'flex';
+    moveGhost(e);
+    document.addEventListener('mousemove', moveH);
+    document.addEventListener('mouseup',   upH);
+    document.addEventListener('touchmove', moveH, { passive: false });
+    document.addEventListener('touchend',  upH);
+  }
+  function moveH(e) {
+    e.preventDefault();
+    moveGhost(e);
+    var cx = e.touches ? e.touches[0].clientX : e.clientX;
+    var cy = e.touches ? e.touches[0].clientY : e.clientY;
+    dropzone.classList.toggle('drag-over', isOver(cx, cy));
+  }
+  function upH(e) {
+    tok.classList.remove('dragging-active');
+    dragGhost.style.display = 'none';
+    dropzone.classList.remove('drag-over');
+    document.removeEventListener('mousemove', moveH);
+    document.removeEventListener('mouseup',   upH);
+    document.removeEventListener('touchmove', moveH);
+    document.removeEventListener('touchend',  upH);
+    var cx = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    var cy = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+    if (isOver(cx, cy)) dropIt(idx, tok);
+  }
+  tok.addEventListener('mousedown',  start);
+  tok.addEventListener('touchstart', start, { passive: false });
+}
+
+function moveGhost(e) {
+  var cx = e.touches ? e.touches[0].clientX : e.clientX;
+  var cy = e.touches ? e.touches[0].clientY : e.clientY;
+  dragGhost.style.left = cx + 'px';
+  dragGhost.style.top  = cy + 'px';
+}
+
+function isOver(cx, cy) {
+  var dz = dropzone.getBoundingClientRect();
+  var mx = dz.left + dz.width/2, my = dz.top + dz.height/2;
+  var rx = dz.width/2, ry = dz.height/2;
+  return ((cx-mx)/rx)*((cx-mx)/rx) + ((cy-my)/ry)*((cy-my)/ry) <= 1;
+}
+
+function dropIt(i, tok) {
+  if (tok.classList.contains('dropped')) return;
+  tok.classList.add('dropped');
+  document.getElementById('rrow-' + i).classList.add('unlocked');
+  kAdded++;
+  scFillEl.style.width = (kAdded / kTotal * 100) + '%';
+
+  spawnSplash();
+  spawnEmoji(INGS[i].icon);
+
+  scStatus.textContent = INGS[i].msg;
+  scReset.style.display = 'inline-block';
+
+  if (kAdded === kTotal) {
+    setTimeout(function() {
+      scStatus.textContent = '🎉 Bishal’s Birthday Pizza is complete!';
+      document.getElementById('pizza-complete-banner').classList.add('show');
+      launchConfetti(150);
+    }, 600);
+  }
+}
+
+function resetKitchen() {
+  kAdded = 0;
+  kParticles = [];
+  scFillEl.style.width = '0%';
+  scStatus.textContent = 'Drag a topping onto the pizza 🍕';
+  document.getElementById('pizza-complete-banner').classList.remove('show');
+  scReset.style.display = 'none';
+  INGS.forEach(function(ing, i) {
+    var t = document.getElementById('tok-' + i);
+    if (t) t.classList.remove('dropped');
+    var r = document.getElementById('rrow-' + i);
+    if (r) r.classList.remove('unlocked');
+  });
+}
+
+  // iOS Safari needs a user gesture to start video — trigger on first touch
+  document.addEventListener('touchstart', function iosPlay() {
+    var v = document.getElementById('cooking-video');
+    if (v) v.play();
+    startMusic();
+    document.removeEventListener('touchstart', iosPlay);
+  }, { once: true });
+
+// ── WISHES WALL ──────────────────────────────────────────────────
+const defaultWishes = [
+  { name: '🌺 Rahul Narayan', text: 'Happy Birthday Bishal! You have the kind of patience and warmth that very few people in this world have. I know this year is going to be a great one for you. You deserve it!' },
+  { name: '🎉 Dhiraj', text: 'Happy Birthday, brother! From teaching us Chandramallika to treating us with your cooking, you\'ve always brought a little bit of Odisha\'s warmth wherever you go. May your year be filled with great adventures, happy miles, delicious meals, and just enough Karnataka–Odisha diplomacy to keep everyone smiling!' },
+  { name: '🙏 Raj Kiran', text: 'Bishaaaal.... Happiest birthday wishes 🎂 May this year be filled with all that you desire. I wish you loads of happiness, health, prosperity and love. Have a great day Bishal and may Govinda bless and be with you through and through!' },
+  { name: '😄 Sumukh', text: 'Happy Birthday, Bishal! Magar ladle, meeeooww!' },
+  { name: '💛 Surabhi Sampath', text: 'Happy birthday, Bishal! You have this rare ability to make everyone around you feel seen and valued. Here\'s to a year full of joy, adventure, and everything you deserve. 🎉' },
+];
+
+const wall = document.getElementById('wishes-wall');
+const STORAGE_KEY = 'bishal_birthday_wishes';
+
+function loadWishes() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    // always show defaults; then show any user-added wishes on top
+    defaultWishes.slice().reverse().forEach(w => renderWish(w.name, w.text, false));
+    saved.forEach(w => renderWish(w.name, w.text, false));
+  } catch(e) {
+    defaultWishes.forEach(w => renderWish(w.name, w.text, false));
+  }
+}
+
+function saveWishes() {
+  // only save wishes beyond the default count
+  const notes = Array.from(wall.querySelectorAll('.wish-note'));
+  const userAdded = notes.slice(0, notes.length - defaultWishes.length);
+  const data = userAdded.map(n => ({
+    name: n.querySelector('strong').textContent,
+    text: n.querySelector('span').textContent,
+  }));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function renderWish(name, text, save = true) {
+  const div = document.createElement('div');
+  div.className = 'wish-note';
+  div.innerHTML = `<strong>${name}</strong><span>${text}</span><button class="wish-delete" title="Remove" onclick="this.closest('.wish-note').remove(); saveWishes();">&times;</button>`;
+  wall.prepend(div);
+  if (save) saveWishes();
+}
+
+loadWishes();
+
+function addWish() {
+  const name = document.getElementById('wish-name').value.trim();
+  const text = document.getElementById('wish-text').value.trim();
+  if (!text) { alert('Please write a wish first! 💌'); return; }
+  renderWish(name || 'Anonymous 🌸', text);
+  document.getElementById('wish-name').value = '';
+  document.getElementById('wish-text').value = '';
+  launchConfetti(30);
+}
+
+// allow pressing Enter in wish inputs
+document.getElementById('wish-text').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addWish();
+});
+
+// ── CONFETTI ─────────────────────────────────────────────────────
+function launchConfetti(count = 120) {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors  = ['#e2a020','#c0392b','#e67e22','#27ae60','#f1c40f','#8e44ad'];
+  const pieces  = [];
+
+  for (let i = 0; i < count; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -10,
+      r: 4 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: 2 + Math.random() * 5,
+      life: 1,
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      if (p.life <= 0) return;
+      p.x += p.vx; p.y += p.vy; p.life -= 0.008;
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle   = p.color;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.r, p.r / 2, p.vy * 0.1, 0, Math.PI * 2);
+      ctx.fill();
+      if (p.life > 0) alive = true;
+    });
+    ctx.globalAlpha = 1;
+    if (alive) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+// auto-confetti on load after a short delay
+window.addEventListener('load', () => setTimeout(() => launchConfetti(80), 800));
+</script>
+</body>
+</html>
